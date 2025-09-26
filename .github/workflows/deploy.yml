@@ -27,12 +27,11 @@ jobs:
 
       # 3. Validate bundle
       - name: Validate Databricks Bundle
-        run: |
-          databricks bundle validate
+        run: databricks bundle validate
 
       # 4. Debug branch name
       - name: Debug branch
-        run: echo "Branch detected: ${GITHUB_REF##*/}"
+        run: echo "Branch detected:${GITHUB_REF##*/}"
 
       # 5. Deploy based on branch
       - name: Deploy Databricks Bundle
@@ -41,11 +40,10 @@ jobs:
           echo "Running deploy for branch: $branch"
 
           if [ "$branch" = "main" ]; then
-            echo "🚀 Deploying to PROD"
+            echo "Deploying to PROD"
             databricks bundle deploy -t prod --verbose
           elif [ "$branch" = "Test" ] || [ "$branch" = "test" ]; then
-            echo "🚀 Deploying to DEV"
+            echo "Deploying to DEV"
             databricks bundle deploy -t dev --verbose
           else
-            echo "⚠️ No deploy target mapped for branch: $branch"
-          fi
+            echo "No deploy target mapped for branch: $branch"
