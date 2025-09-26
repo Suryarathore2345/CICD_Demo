@@ -35,6 +35,7 @@ jobs:
 
       # 5. Deploy based on branch
       - name: Deploy Databricks Bundle
+        shell: bash
         run: |
           branch="${GITHUB_REF##*/}"
           echo "Running deploy for branch: $branch"
@@ -47,3 +48,4 @@ jobs:
             databricks bundle deploy -t dev --verbose
           else
             echo "No deploy target mapped for branch: $branch"
+          fi
