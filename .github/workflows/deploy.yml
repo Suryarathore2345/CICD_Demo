@@ -1,0 +1,34 @@
+name: Databricks CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - dev   # Run workflow when code is pushed to main or dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Databricks CLI
+        run: pip install databricks-cli
+
+      - name: Validate Databricks Bundle
+        run: databricks bundle validate
+
+      - name: Deploy to Databricks (Dev)
+        if: github.ref == 'refs/heads/dev'
+        run: databricks bundle deploy -t dev
+
+      - name: Deploy to Databricks (Prod)
+        if: github.ref == 'refs/heads/main'
+        run: databricks bundle deploy -t prod
