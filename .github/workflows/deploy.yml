@@ -1,0 +1,40 @@
+name: Databricks CI/CD
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+
+jobs:
+  databricks-ci:
+    runs-on: ubuntu-latest
+    env:   # 👈 make env available for all steps
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+
+    steps:
+      # 1. Checkout code
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # 2. Set up Databricks CLI
+      - name: Install Databricks CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          databricks version
+
+      # 3. Validate Bundle
+      - name: Validate Databricks Bundle
+        run: |
+          databricks bundle validate
+
+      # 4. Deploy Bundle (to dev or prod depending on branch)
+      - name: Deploy Databricks Bundle
+        run: |
+          if [[ "${GITHUB_REF##*/}" == "main" ]]; then
+            databricks bundle deploy -t prod
+          else
+            databricks bundle deploy -t dev
+          fi
