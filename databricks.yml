@@ -1,0 +1,30 @@
+# This is a Databricks asset bundle definition for Demo_CICD.
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+bundle:
+  name: Demo_CICD
+  uuid: b477923c-4e30-42cc-bba4-ce294150f8ca
+
+include:
+  - resources/*.yml
+  - resources/*/*.yml
+
+targets:
+  dev:
+    # The default target uses 'mode: development' to create a development copy.
+    # - Deployed resources get prefixed with '[dev my_user_name]'
+    # - Any job schedules and triggers are paused by default.
+    # See also https://docs.databricks.com/dev-tools/bundles/deployment-modes.html.
+    mode: development
+    default: true
+    workspace:
+      host: https://dbc-93ce28fa-ce8d.cloud.databricks.com
+
+  prod:
+    mode: production
+    workspace:
+      host: https://dbc-93ce28fa-ce8d.cloud.databricks.com
+      # We explicitly deploy to /Workspace/Users/suryarathore2345@gmail.com to make sure we only have a single copy.
+      root_path: /Workspace/Users/suryarathore2345@gmail.com/.bundle/${bundle.name}/${bundle.target}
+    permissions:
+      - user_name: suryarathore2345@gmail.com
+        level: CAN_MANAGE

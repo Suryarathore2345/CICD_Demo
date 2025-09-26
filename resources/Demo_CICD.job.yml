@@ -1,0 +1,21 @@
+# The main job for DEMO_CICD.
+resources:
+  jobs:
+    DEMO_CICD_job:
+      name: DEMO_CICD_job
+ 
+      trigger:
+        # Run this job every day, exactly one day from the last run; see https://docs.databricks.com/api/workspace/jobs/create#trigger
+        periodic:
+          interval: 1
+          unit: DAYS
+ 
+      #email_notifications:
+      #  on_failure:da
+      #    - your_email@example.com
+ 
+      tasks:
+        - task_key: notebook_task
+          description: "Run initial notebook"
+          notebook_task:
+            notebook_path: ../src/demo_cicd.ipynb
