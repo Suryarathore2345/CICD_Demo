@@ -1,7 +1,7 @@
 # The main job for DEMO_CICD.
 resources:
   jobs:
-    DEMO_CICD_job:
+    Test_Job:
       name: Test_Job
  
       trigger:
