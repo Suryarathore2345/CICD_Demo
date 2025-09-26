@@ -10,6 +10,9 @@ on:
 jobs:
   databricks-ci:
     runs-on: ubuntu-latest
+    env:   # 👈 make env available for all steps
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
 
     steps:
       # 1. Checkout code
@@ -20,21 +23,14 @@ jobs:
       - name: Install Databricks CLI
         run: |
           curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
-          databricks --version
+          databricks version
 
-      # 3. Configure Databricks Authentication
-      - name: Configure Databricks Auth
-        run: |
-          export DATABRICKS_HOST=${{ secrets.DATABRICKS_HOST }}
-          export DATABRICKS_TOKEN=${{ secrets.DATABRICKS_TOKEN }}
-          echo "Databricks Auth Configured"
-
-      # 4. Validate Bundle
+      # 3. Validate Bundle
       - name: Validate Databricks Bundle
         run: |
           databricks bundle validate
 
-      # 5. Deploy Bundle (to dev or prod depending on branch)
+      # 4. Deploy Bundle (to dev or prod depending on branch)
       - name: Deploy Databricks Bundle
         run: |
           if [[ "${GITHUB_REF##*/}" == "main" ]]; then
